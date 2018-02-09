@@ -2,7 +2,8 @@ import sys
 from algs4.stdlib import stdio
 
 class WeightedQuickUnionUF:
-    
+
+
     """
     This is an implementation of the union-find data structure - see module documentation for
     more info.
@@ -16,6 +17,7 @@ class WeightedQuickUnionUF:
     For additional documentation, see Section 1.5 of Algorithms, 4th Edition by Robert Sedgewick and Kevin Wayne.
     """
 
+
     def __init__(self, n):
         """
         Initializes an empty union-find data structure with n sites,
@@ -25,6 +27,7 @@ class WeightedQuickUnionUF:
         """
         self._count = n
         self._event_counter = 0
+        self._vertices_counter = 1
         self._is_giant = False
         self._biggest_component_size = 0
         self._total = n
@@ -33,7 +36,6 @@ class WeightedQuickUnionUF:
         self._size = [1]*n
         self._count_isolated = n
         self._is_isolated = True
-        self._connected = False
         self._is_events_before_giant_printed = False
         self._events_before_giant = 0
 
@@ -121,9 +123,10 @@ class WeightedQuickUnionUF:
         """
         while self._is_isolated: 
             if 1 in self._isolated:
+                self._vertices_counter += 1
                 break
             else:
-                return(self._event_counter)
+                return(self._vertices_counter)
                 self._is_isolated = False
 
 
@@ -133,8 +136,9 @@ class WeightedQuickUnionUF:
         If the component is fully connected, it returns the amount of events it has taken
         """
         if self._count == 1:
-            self._connected = True
             return(self._event_counter)
+        #else:
+            #self._events_counter += 1
 
 
     def events_for_giant_component(self, p):
