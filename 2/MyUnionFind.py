@@ -2,6 +2,7 @@ import sys
 from algs4.stdlib import stdio
 
 class WeightedQuickUnionUF:
+    
     """
     This is an implementation of the union-find data structure - see module documentation for
     more info.
@@ -14,6 +15,7 @@ class WeightedQuickUnionUF:
 
     For additional documentation, see Section 1.5 of Algorithms, 4th Edition by Robert Sedgewick and Kevin Wayne.
     """
+
     def __init__(self, n):
         """
         Initializes an empty union-find data structure with n sites,
@@ -22,24 +24,28 @@ class WeightedQuickUnionUF:
         :param n: the number of sites
         """
         self._count = n
-        self._event = 0
-        self._notGiant = False
+        self._event_counter = 0
+        self._is_giant = False
+        self._biggest_component_size = 0
         self._total = n
         self._parent = list(range(n))
         self._isolated = [1]*n
         self._size = [1]*n
-        self._countIsolated = n
-        self._isIsolated = True
+        self._count_isolated = n
+        self._is_isolated = True
         self._connected = False
-   
+        self._is_events_before_giant_printed = False
+        self._events_before_giant = 0
+
+
     def _validate(self, p):
         # validate that p is a valid index
         n = len(self._parent)
         if p < 0 or p >= n:
             raise ValueError('index {} is not between 0 and {}'.format(p, n))
 
+
     def union(self, p, q):
-        
         """
         Merges the component containing site p with the
         component containing site q.
@@ -47,43 +53,36 @@ class WeightedQuickUnionUF:
         :param p: the integer representing one site
         :param q: the integer representing the other site
         """
-        
+        self._event_counter += 1
+
         root_p = self.find(p)
         root_q = self.find(q)
         if root_p == root_q:
             return
         
-        #Checks whether or not there's a giant component. If there is, print the 
-        #amount of unions made when it's created.
-        while not self._notGiant:
-            if self._event > self._total/2:
-                self._notGiant = True
-                print(self._event)
-            else:
-                    break
-
         # make root of smaller rank point to root of larger rank
         if self._size[root_p] < self._size[root_q]:
             small, large = root_p, root_q
         else:
-            small, large = root_q, root_p
-            
+            small, large = root_q, root_p    
         
         self._parent[small] = large
         self._size[large] += self._size[small]
-      
+        self._biggest_component_size = self._size[large]
         self._count -= 1
         
-        #Checks whether a component is isolated or not
+        
+        #Checks whether a component is isolated or not by looking at the index of the current vertex, 
+        #and comparing it to the list self._isolated at the same index. If the value is 1, the vertex is 
+        #isolated, if the value is 0, it's connected to another vertex. 
         if self._isolated[p] == 1:
             self._isolated[p] = 0
-            self._countIsolated -= 1
+            self._count_isolated -= 1
             
         if self._isolated[q] == 1:
             self._isolated[q] = 0
-            self._countIsolated -= 1
-        
-        
+            self._count_isolated -= 1
+
 
     def find(self, p):
         """
@@ -93,12 +92,12 @@ class WeightedQuickUnionUF:
         :return: the component identifier for the component containing site p
         """
         self._validate(p)
-        
+
         while p != self._parent[p]:
-            self._event += 1
             p = self._parent[p]
             
         return p
+
 
     def connected(self, p, q):
         """
@@ -109,38 +108,47 @@ class WeightedQuickUnionUF:
         :return: true if the two sites p and q are in the same component; false otherwise
         """
         return self.find(p) == self.find(q)
-    
+
 
     def count(self):
         return self._count
 
-    def isNotIsolated(self):
-        """
-        Returns the amount of unions made before the amount of isolated sites is 0.
 
-        If > 0, returns sufficient message.
+    def check_for_isolated_vertices(self):
         """
-        while self._isIsolated: 
+        Checks whether or not there are still any isolated vertices in list self._isolated.
+        When there's no isolated vertices, it returns the amount of events it has taken.
+        """
+        while self._is_isolated: 
             if 1 in self._isolated:
-                #print("There's still isolated sites")
                 break
             else:
-                self._isIsolated = False
-                print(self._event)
-        return(self._event)
-    
-    def isConnected(self):
+                return(self._event_counter)
+                self._is_isolated = False
+
+
+    def events_for_fully_connected(self):
         """ 
-        Returns True if there's one connected component. 
-        Returns False if there's several components.
+        Checks whether or not it is a fully connected component. 
+        If the component is fully connected, it returns the amount of events it has taken
         """
         if self._count == 1:
             self._connected = True
-        #print(self._event)
-        return self._event
-        
-    #def isEvent(self):
-        #if not self.connected():
-         #   self._event += 1
-        #else: 
-        #    self._event += 1
+            return(self._event_counter)
+
+
+    def events_for_giant_component(self, p):
+        """
+        This checks when there's a giant component, which is defined by =>n/2. When a giant
+        component is created, it returns the amount of events it has taken.
+        """
+        n = 0
+        if not self._is_giant:
+             if p >= self._total/2:
+                self._events_before_giant = self._event_counter
+                self._is_giant = True
+                return
+        elif not self._is_events_before_giant_printed:
+            return(self._events_before_giant)
+            self._is_events_before_giant_printed = True
+            
