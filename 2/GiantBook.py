@@ -5,11 +5,12 @@ from algs4.stdlib import stdstats
 from MyUnionFind import WeightedQuickUnionUF
 
 class UFW:
-    x = 1000
+    x = 10
+    t = 10
     giant_list = []
     connected_list = []
     vertices_list = []
-    for i in range(0,9):
+    for i in range(0,t-1):
         if __name__ == '__main__':
             #sites = stdio.readInt()
             uf = WeightedQuickUnionUF(x)
