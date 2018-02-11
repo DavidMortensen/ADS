@@ -1,4 +1,5 @@
 import sys
+import statistics
 from algs4.stdlib import stdio
 
 class WeightedQuickUnionUF:
@@ -36,7 +37,7 @@ class WeightedQuickUnionUF:
         self._size = [1]*n
         self._count_isolated = n
         self._is_isolated = True
-        self._is_events_before_giant_printed = False
+        self._is_events_before_giant_returned = False
         self._events_before_giant = 0
 
 
@@ -152,7 +153,10 @@ class WeightedQuickUnionUF:
                 self._events_before_giant = self._event_counter
                 self._is_giant = True
                 return
-        elif not self._is_events_before_giant_printed:
+                
+                
+                
+        elif not self._is_events_before_giant_returned:
             return(self._events_before_giant)
-            self._is_events_before_giant_printed = True
-            
+            self._is_events_before_giant_returned = True
+        
