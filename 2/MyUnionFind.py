@@ -3,8 +3,6 @@ import statistics
 from algs4.stdlib import stdio
 
 class WeightedQuickUnionUF:
-
-
     """
     This is an implementation of the union-find data structure - see module documentation for
     more info.
@@ -27,17 +25,16 @@ class WeightedQuickUnionUF:
         :param n: the number of sites
         """
         self._count = n
+        self._total = n
         self._event_counter = 0
-        self._vertices_counter = 1
+        self._vertices_event_counter = 1
         self._is_giant = False
         self._biggest_component_size = 0
-        self._total = n
         self._parent = list(range(n))
         self._isolated = [1]*n
         self._size = [1]*n
-        self._count_isolated = n
+        self._isolated_components = n
         self._is_isolated = True
-        self._is_events_before_giant_returned = False
         self._events_before_giant = 0
 
 
@@ -56,8 +53,8 @@ class WeightedQuickUnionUF:
         :param p: the integer representing one site
         :param q: the integer representing the other site
         """
-        self._event_counter += 1
 
+        self._event_counter += 1
         root_p = self.find(p)
         root_q = self.find(q)
         if root_p == root_q:
@@ -71,20 +68,21 @@ class WeightedQuickUnionUF:
         
         self._parent[small] = large
         self._size[large] += self._size[small]
-        self._biggest_component_size = self._size[large]
+        
+        # check if current component is larger than the biggest. If so, replace biggest with current value.
+        if self._size[large] > self._biggest_component_size:
+            self._biggest_component_size = self._size[large]
+
         self._count -= 1
         
-        
-        #Checks whether a component is isolated or not by looking at the index of the current vertex, 
-        #and comparing it to the list self._isolated at the same index. If the value is 1, the vertex is 
-        #isolated, if the value is 0, it's connected to another vertex. 
+        # check if vertex if isolated. if true, set value in binary list to 0 from 1 and decrement isolated counter.
         if self._isolated[p] == 1:
             self._isolated[p] = 0
-            self._count_isolated -= 1
+            self._isolated_components -= 1
             
         if self._isolated[q] == 1:
             self._isolated[q] = 0
-            self._count_isolated -= 1
+            self._isolated_components -= 1
 
 
     def find(self, p):
@@ -123,12 +121,14 @@ class WeightedQuickUnionUF:
         When there's no isolated vertices, it returns the amount of events it has taken.
         """
         while self._is_isolated: 
-            if 1 in self._isolated:
-                self._vertices_counter += 1
-                break
-            else:
-                return(self._vertices_counter)
+            if self._isolated_components == 0:
                 self._is_isolated = False
+
+            else:
+                self._vertices_event_counter += 1
+                break
+
+        return(self._vertices_event_counter)
 
 
     def events_for_fully_connected(self):
@@ -138,25 +138,19 @@ class WeightedQuickUnionUF:
         """
         if self._count == 1:
             return(self._event_counter)
-        #else:
-            #self._events_counter += 1
 
 
-    def events_for_giant_component(self, p):
+    def events_for_giant_component(self):
         """
         This checks when there's a giant component, which is defined by =>n/2. When a giant
-        component is created, it returns the amount of events it has taken.
+        component is created, it returns the amount of events it has taken. 
         """
-        n = 0
-        if not self._is_giant:
-             if p >= self._total/2:
+        if not self._is_giant:   
+            if self._biggest_component_size >= self._total/2:
+                #print("now i'll store!")
                 self._events_before_giant = self._event_counter
                 self._is_giant = True
-                return
                 
-                
-                
-        elif not self._is_events_before_giant_returned:
-            return(self._events_before_giant)
-            self._is_events_before_giant_returned = True
+
+        return(self._events_before_giant)
         
