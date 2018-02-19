@@ -1,6 +1,7 @@
 from algs4.stdlib.stdrandom import uniform,shuffle
 from algs4.stdlib.stdstats import mean,stddev
 from random import randint
+import random
 #from algs4.stdlib.stdio import eprint
 import sys
 def eprint(*args, **kwargs):
@@ -13,12 +14,12 @@ class RandomQueue:
         self._size = 0
         self._start_size = 10
         self._queue = [None] * self._start_size
-    
+
     def size(self):
         return self._size
     
     # check if our queue is empty or not
-    def is_empty(self):
+    def isEmpty(self):
         return True if self._size == 0 else False
 
     def enqueue(self, data):
@@ -35,7 +36,7 @@ class RandomQueue:
 
 
     def dequeue(self):
-        if self.is_empty():
+        if self.isEmpty():
             raise RuntimeError ('Queue is empty!')
 
         # generate random index
@@ -57,7 +58,7 @@ class RandomQueue:
         self._size -= 1
 
         # if the size is 75% of the length of the list, slice from 0 to 75% of the length.
-        if self._size <= round(len(self._queue)*.75):
+        if self._size <= round(len(self._queue)*.5):
             self._queue = self._queue[:round(len(self._queue)*.75)]
 
         return popped
@@ -69,10 +70,13 @@ class RandomQueue:
 
     def __iter__(self):
         # your code here:
+        mine = self._queue[:self._size]
+        shuffle(mine)
         # create a list mine of the objects in the intended order; the following iterates over mine
-        mine = []
         for x in mine:
             yield x
+
+        
 
     # This "main method" tests your implementation. Do not change it.
 if __name__ == "__main__":
@@ -94,15 +98,19 @@ if __name__ == "__main__":
         Q.enqueue(i)
 
     # Empty the queue in random order
-    while not Q.is_empty():
+    while not Q.isEmpty():
         eprint(Q.dequeue(),end=' ')       
     eprint()
 
     # Let s look at the iterator. First, we make a queue of colours:
-    C= RandomQueue()
-    C.enqueue("red"); C.enqueue("blue"); C.enqueue("green"); C.enqueue("yellow");
+    C = RandomQueue()
+    C.enqueue("red"); C.enqueue("blue"); C.enqueue("green"); C.enqueue("yellow")
     I = iter(C)
     J = iter(C)
     eprint("Two colours from first shuffle: {} {}".format(next(I),next(I)))
+    
     eprint("Entire second shuffle: {}".format(' '.join([i for i in J])))
     eprint("Remaining two colours from first shuffle: {} {}".format(next(I),next(I)))
+    
+
+    
