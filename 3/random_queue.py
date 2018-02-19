@@ -12,7 +12,7 @@ class RandomQueue:
 # the code replaces the following Nones;
     def __init__(self):
         self._size = 0
-        self._start_size = 10
+        self._start_size = 1
         self._queue = [None] * self._start_size
 
     def size(self):
@@ -70,7 +70,7 @@ class RandomQueue:
 
     def __iter__(self):
         # your code here:
-        mine = self._queue[:self._size]
+        mine = self._queue[:]
         shuffle(mine)
         # create a list mine of the objects in the intended order; the following iterates over mine
         for x in mine:
