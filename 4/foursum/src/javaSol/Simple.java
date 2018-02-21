@@ -13,9 +13,9 @@ public class Simple
 
         // your code goes here and uses the following
 		for(int i= 0; i< N; i+= 1) {
-			for(int j= 0; j< N; j+= 1) {
-				for(int k= 0; k< N; k+= 1) {
-					for(int l= 0; l< N; l+= 1) {
+			for(int j= i+1; j< N; j+= 1) {
+				for(int k= j+1; k< N; k+= 1) {
+					for(int l= k+1; l< N; l+= 1) {
 						if (vals[i] + vals[j] + vals[k] + vals[l] == 0) 
 							{
 								System.err.println(i+" "+j+" "+k+" "+l);
