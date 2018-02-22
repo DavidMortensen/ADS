@@ -24,18 +24,13 @@ class WeightedQuickUnionUF:
 
         :param n: the number of sites
         """
+        
         self._count = n
         self._total = n
-        self._event_counter = 0
-        self._vertices_event_counter = 1
-        self._is_giant = False
         self._biggest_component_size = 0
         self._parent = list(range(n))
-        self._isolated = [1]*n
         self._size = [1]*n
         self._isolated_components = n
-        self._is_isolated = True
-        self._events_before_giant = 0
 
 
     def _validate(self, p):
@@ -53,13 +48,17 @@ class WeightedQuickUnionUF:
         :param p: the integer representing one site
         :param q: the integer representing the other site
         """
-
-        self._event_counter += 1
         root_p = self.find(p)
         root_q = self.find(q)
+        
         if root_p == root_q:
             return
-        
+
+        if self._size[root_p] == 1:
+            self._isolated_components -= 1
+        if self._size[root_q] == 1:
+            self._isolated_components -= 1
+
         # make root of smaller rank point to root of larger rank
         if self._size[root_p] < self._size[root_q]:
             small, large = root_p, root_q
@@ -76,14 +75,6 @@ class WeightedQuickUnionUF:
         self._count -= 1
         
         # check if vertex if isolated. if true, set value in binary list to 0 from 1 and decrement isolated counter.
-        if self._isolated[p] == 1:
-            self._isolated[p] = 0
-            self._isolated_components -= 1
-            
-        if self._isolated[q] == 1:
-            self._isolated[q] = 0
-            self._isolated_components -= 1
-
 
     def find(self, p):
         """
@@ -114,43 +105,6 @@ class WeightedQuickUnionUF:
     def count(self):
         return self._count
 
-
-    def check_for_isolated_vertices(self):
-        """
-        Checks whether or not there are still any isolated vertices in list self._isolated.
-        When there's no isolated vertices, it returns the amount of events it has taken.
-        """
-        while self._is_isolated: 
-            if self._isolated_components == 0:
-                self._is_isolated = False
-
-            else:
-                self._vertices_event_counter += 1
-                break
-
-        return(self._vertices_event_counter)
-
-
-    def events_for_fully_connected(self):
-        """ 
-        Checks whether or not it is a fully connected component. 
-        If the component is fully connected, it returns the amount of events it has taken
-        """
-        if self._count == 1:
-            return(self._event_counter)
-
-
-    def events_for_giant_component(self):
-        """
-        This checks when there's a giant component, which is defined by =>n/2. When a giant
-        component is created, it returns the amount of events it has taken. 
-        """
-        if not self._is_giant:   
-            if self._biggest_component_size >= self._total/2:
-                #print("now i'll store!")
-                self._events_before_giant = self._event_counter
-                self._is_giant = True
-                
-
-        return(self._events_before_giant)
+    def largest_component(self):
+        return self._biggest_component_size
         

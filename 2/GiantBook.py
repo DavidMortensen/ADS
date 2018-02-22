@@ -9,30 +9,48 @@ class UFW:
     n is the amount of nodes we want to create.
     t is the amount of runs we want to do.
     """
-    n = 10**6
+    n = 10**5
+    events = 0
+    is_giant = False
+    is_isolated = True
     t = 1
     giant_list, connected_list, vertices_list = [], [], []
 
     for i in range(0,t):
-        print('Runthrough #', i+1)
         uf = WeightedQuickUnionUF(n)
-
         # run script until we have a fully connected component
-        while uf.events_for_fully_connected() == None:
+        while uf.count() > 1:
             s1 = randint(0, n-1)
             s2 = randint(0, n-1)
+            
+            events += 1
             uf.union(s1,s2)
-            giant = uf.events_for_giant_component()
-            isolated = uf.check_for_isolated_vertices()
-            connected = uf.events_for_fully_connected()
-            if uf._isolated_components % 10000 == 0:
-                print(uf._isolated_components)
+            
+            if uf.count() == 1:
+                fully_connected = events
 
-        giant_list.append(giant)
+            while not is_giant:
+                if uf.largest_component() >= n/2:
+                    giant_component = events
+                    is_giant = True
+                else: 
+                    break
+
+            while is_isolated:
+                if uf._isolated_components == 0:
+                    isolated = events
+                    is_isolated = False
+                else:
+                    break
+        # print(  sites, 
+        #         isolated,
+        #         giant_component,
+        #         fully_connected)
+        giant_list.append(giant_component)
         vertices_list.append(isolated)
-        connected_list.append(connected)
+        connected_list.append(fully_connected)
 
-       
+
     if t > 1:
         # mean and stddev for giant 
         mean_giant = stdstats.mean(giant_list)
@@ -57,4 +75,4 @@ class UFW:
 
     else:
         raise ValueError('Variable "t" needs to be a positive integer.')
-        
+  
