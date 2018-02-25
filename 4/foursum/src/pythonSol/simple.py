@@ -14,7 +14,7 @@ for i in range(0, N):
             for l in range(k+1, N):
 
                 if vals[i]+vals[j]+vals[k]+vals[l] == 0:
-                    print(i,j,k,l,file=sys.stderr)
-                    print(True)
+                    #print(i,j,k,l,file=sys.stderr)
+                    #print(True)
                     sys.exit()
-print(False)
+#print(False)

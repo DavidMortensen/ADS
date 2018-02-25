@@ -7,10 +7,12 @@ vals = list(map(int, sys.stdin.readlines()))
 
 class FourSumFast:
     is_sum_zero = False
+    
     @staticmethod
     def count(vals, N):
+        
         is_sum_zero = False
-    
+        """
         dictionary = {}
         for a in vals:
             for b in vals:
@@ -20,7 +22,8 @@ class FourSumFast:
                     return [a, b, c, d]
         return None
         
-        ''' count = 0
+        """
+        count = 0
         is_sum_zero = False
         vals.sort()
         
@@ -31,9 +34,9 @@ class FourSumFast:
                         count += 1
         if count > 0:
             is_sum_zero = True
-        print(is_sum_zero) '''
+        return is_sum_zero
 
             
 
-print(FourSumFast.count(vals, N))
+FourSumFast.count(vals, N)
 
