@@ -69,12 +69,14 @@ class RandomQueue:
         return self._queue[random_index]
 
     def __iter__(self):
-        # your code here:
-        mine = self._queue[:]
+        # for at gøre TA glad, har vi benyttet din metode :) :) :) :) 
+        # Til Andreas, se link: https://giphy.com/gifs/whoa-hd-tim-and-eric-xT0xeJpnrWC4XWblEk
+        mine = [i for i in range(self._size)]
         shuffle(mine)
-        # create a list mine of the objects in the intended order; the following iterates over mine
-        for x in mine:
-            yield x
+
+        for idx in mine:
+            yield self._queue[idx]
+
 
         
 
