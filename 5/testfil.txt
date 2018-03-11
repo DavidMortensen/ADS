@@ -1,6 +1,8 @@
-2
-14
+3
+8
 GetsOneSeat
-10
+100000
 AlsoGetsOneSeat
-12
+80000
+Party
+30000
