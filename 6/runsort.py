@@ -43,7 +43,7 @@ def sort(a, count):
         
         _merge(a, aux, lo, first, second)
         lo = second + 1
-
+    print(a)
     sort(a, count+1)
 
 import sys
@@ -60,7 +60,9 @@ if __name__ == '__main__':
             print("File not found, using standard input instead")
     
     a = stdio.readAllStrings()
+    print(a)
     sort(a, 1)
+    print(a)
     for elem in a:
         print(elem)
     
